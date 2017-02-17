@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=750">
+    <title>Three.js</title>
+    <link href='https://fonts.googleapis.com/css?family=Playfair+Display:400,700,700italic' rel='stylesheet'>
+    <link rel="stylesheet" href="/assets/css/bundle.css">
+  </head>
+  <body>
+    <div class="game-holder" id="gameHolder">
+      <div class="header">
+        <h1><span>the</span>Aviator</h1>
+        <h2>fly it to the end</h2>
+        <div class="score" id="score">
+          <div class="score__content" id="level">
+            <div class="score__label">level</div>
+            <div class="score__value score__value--level" id="levelValue">1</div>
+            <svg class="level-circle" id="levelCircle" viewbox="0 0 200 200">
+              <circle id="levelCircleBgr" r="80" cx="100" cy="100" fill="none" stroke="#d1b790" stroke-width="24px" />
+              <circle id="levelCircleStroke" r="80" cx="100" cy="100" fill="none" #f25346 stroke="#68c3c0" stroke-width="14px" stroke-dasharray="502" />
+            </svg>
+          </div>
+          <div class="score__content" id="dist">
+            <div class="score__label">distance</div>
+            <div class="score__value score__value--dist" id="distValue">000</div>
+          </div>
+          <div class="score__content" id="energy">
+            <div class="score__label">energy</div>
+            <div class="score__value score__value--energy" id="energyValue">
+              <div class="energy-bar" id="energyBar"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="world" id="world"></div>
+      <div class="message message--replay" id="replayMessage">Click to Replay</div>
+      <div class="message message--instructions" id="instructions">Grab the blue pills<span>avoid the red ones</span></div>
+    </div>
+    <!-- Demo links -->
+    <nav class="meta">
+      <a class="codrops-icon codrops-icon--prev" href="http://tympanus.net/Development/Interactive3DMallMap/" title="Previous Demo"><span>Previous Demo</span></a>
+      <a class="codrops-icon codrops-icon--drop" href="http://tympanus.net/codrops/?p=26501" title="Back to the article"><span>Back to the Codrops article</span></a>
+      <a class="demo-link" href="part1.html">Part 1</a>
+      <a class="demo-link" href="part2.html">Part 2</a>
+    </nav>
+    <script src="/assets/js/bundle.js"></script>
+  </body>
+</html>
