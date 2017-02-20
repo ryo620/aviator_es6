@@ -77,6 +77,38 @@ AVIATOR.AVIATOR_OBJECT = {
 
 
   /*
+   * ゲームリセット
+   * @function resetGame
+   */
+  resetGame: function () {
+
+    Config.energy    = 100; /* エネルギー量 [0-100] 1より小さくなるとmiss */
+    Config.level     = 1;   /* レベル [1-] */
+    Config.distance  = 0;   /* 進行距離 [0-] */
+
+    Config.speed           = 0;    /* スピード */
+    Config.baseSpeed       = 0.00035;
+    Config.planeFallSpeed  = 0.001;
+    Config.targetBaseSpeed = 0.00035;
+    Config.planeSpeed      = 0;
+
+    this.coinLastSpawn   = 0; /* 最後にスポーンした時の距離 */
+    this.levelLastUpdate = 0; /* 最後にアップデートした時の距離 */
+    this.speedLastUpdate = 0; /* 最後にアップデートした時の距離 */
+    this.enemyLastSpawn  = 0; /* 最後にスポーンした時の距離 */
+
+    this.status = 'playing';  /* 'playing', 'gameover', 'watingReplay' */
+
+    Config.collisionSpeedX = 0;
+    Config.collisionSpeedY = 0;
+    Config.collisionDisplacementX = 0;
+    Config.collisionDisplacementY = 0;
+
+    this.fieldLevel.innerHTML = Math.floor(Config.level);
+  },
+
+
+  /*
    * シーンを生成する
    * @function createScene
    */
@@ -96,9 +128,14 @@ AVIATOR.AVIATOR_OBJECT = {
       nearPlane,
       farPlane
     );
-    this.camera.position.x = 0;
-    this.camera.position.z = 200;
-    this.camera.position.y = Config.PLANE_DEFAULT_HEIGHT;
+    this.camera.position.x = -150;
+    this.camera.position.z = 150;
+    this.camera.position.y = Config.PLANE_DEFAULT_HEIGHT + 100;
+    this.camera.lookAt({
+      x: 0,
+      y: 200,
+      z: 0
+    });
 
     this.renderer = new THREE.WebGLRenderer({
       alpha: true,
@@ -446,10 +483,10 @@ AVIATOR.AVIATOR_OBJECT = {
     this.camera.updateProjectionMatrix();
     this.camera.position.y += (this.airplane.mesh.position.y - this.camera.position.y) * Config.deltaTime * Config.CAMERA_SENSIVITY;
 
-    Config.collisionSpeedX += (0 - Config.collisionSpeedX) * Config.deltaTime * 0.03;
-    Config.collisionDisplacementX += (0 - Config.collisionDisplacementX) * Config.deltaTime * 0.01;
-    Config.collisionSpeedY += (0 - Config.collisionSpeedY) * Config.deltaTime * 0.03;
-    Config.collisionDisplacementY += (0 - Config.collisionDisplacementY) * Config.deltaTime * 0.01;
+    Config.collisionSpeedX -= Config.collisionSpeedX * Config.deltaTime * 0.03;
+    Config.collisionSpeedY -= Config.collisionSpeedY * Config.deltaTime * 0.03;
+    Config.collisionDisplacementX -= Config.collisionDisplacementX * Config.deltaTime * 0.01;
+    Config.collisionDisplacementY -= Config.collisionDisplacementY * Config.deltaTime * 0.01;
 
     this.airplane.pilot.updateHairs();
 
@@ -518,60 +555,6 @@ AVIATOR.AVIATOR_OBJECT = {
 
     }
 
-  },
-
-
-  /*
-   * ゲームリセット
-   * @function resetGame
-   */
-  resetGame: function () {
-
-    Config.energy = 100;
-    Config.level  = 1;
-    Config.distance = 0;
-    Config.speed = 0;
-    Config.baseSpeed = 0.00035;
-    Config.planeFallSpeed = 0.001;
-
-    Config.targetBaseSpeed = 0.00035;
-    Config.planeSpeed = 0;
-
-    this.coinLastSpawn   = 0; /* 最後にスポーンした時の距離 */
-    this.levelLastUpdate = 0; /* 最後にアップデートした時の距離 */
-    this.speedLastUpdate = 0; /* 最後にアップデートした時の距離 */
-    this.enemyLastSpawn  = 0; /* 最後にスポーンした時の距離 */
-
-    this.status = 'playing';
-
-    Config.collisionSpeedX = 0;
-    Config.collisionSpeedY = 0;
-    Config.collisionDisplacementX = 0;
-    Config.collisionDisplacementY = 0;
-
-    Config.DISTANCE_FOR_SPEED_UPDATE  = 100;
-    Config.DISTANCE_FOR_COINS_SPAWN   = 100;
-    Config.DISTANCE_FOR_LEVEL_UPDATE  = 1000;
-    Config.DISTANCE_FOR_ENEMIES_SPAWN = 50;
-
-    Config.PLANE_AMP_WIDTH       = 75;
-    Config.PLANE_MOVE_SENSIVITY  = 0.005;
-    Config.PLANE_ROT_X_SENSIVITY = 0.0008;
-    Config.PLANE_ROT_Z_SENSIVITY = 0.0004;
-    Config.PLANE_MIN_SPEED       = 1.2;
-    Config.PLANE_MAX_SPEED       = 1.6;
-
-    Config.RATIO_SPEED_DISTANCE = 50;
-    Config.RATIO_SPEED_ENERGY = 3;
-
-    Config.INIT_SPEED = 0.00035;
-    Config.INCREMENT_SPEED_TIME = 0.0000025;
-    Config.INCREMENT_SPEED_BY_LEVEL = 0.000005;
-
-    Config.CAMERA_SENSIVITY = 0.002;
-
-
-    this.fieldLevel.innerHTML = Math.floor(Config.level);
   }
 
 
@@ -579,5 +562,7 @@ AVIATOR.AVIATOR_OBJECT = {
 
 
 window.addEventListener('load', function init() {
+
   AVIATOR.AVIATOR_OBJECT.init();
+
 }, false);

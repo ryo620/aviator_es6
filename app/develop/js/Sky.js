@@ -36,7 +36,7 @@ export default class Sky {
       this.clouds.push(c);
       c.mesh.position.y = Math.sin(a) * h;
       c.mesh.position.x = Math.cos(a) * h;
-      c.mesh.position.z = -300 - Math.random() * 500;
+      c.mesh.position.z = -200 - Math.random() * 500;
       c.mesh.rotation.z = a + Math.PI / 2;
       c.mesh.scale.set(s, s, s);
 

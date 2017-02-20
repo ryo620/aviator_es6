@@ -152,6 +152,37 @@
 	  },
 
 	  /*
+	   * ゲームリセット
+	   * @function resetGame
+	   */
+	  resetGame: function resetGame() {
+
+	    _Config2.default.energy = 100; /* エネルギー量 [0-100] 1より小さくなるとmiss */
+	    _Config2.default.level = 1; /* レベル [1-] */
+	    _Config2.default.distance = 0; /* 進行距離 [0-] */
+
+	    _Config2.default.speed = 0; /* スピード */
+	    _Config2.default.baseSpeed = 0.00035;
+	    _Config2.default.planeFallSpeed = 0.001;
+	    _Config2.default.targetBaseSpeed = 0.00035;
+	    _Config2.default.planeSpeed = 0;
+
+	    this.coinLastSpawn = 0; /* 最後にスポーンした時の距離 */
+	    this.levelLastUpdate = 0; /* 最後にアップデートした時の距離 */
+	    this.speedLastUpdate = 0; /* 最後にアップデートした時の距離 */
+	    this.enemyLastSpawn = 0; /* 最後にスポーンした時の距離 */
+
+	    this.status = 'playing'; /* 'playing', 'gameover', 'watingReplay' */
+
+	    _Config2.default.collisionSpeedX = 0;
+	    _Config2.default.collisionSpeedY = 0;
+	    _Config2.default.collisionDisplacementX = 0;
+	    _Config2.default.collisionDisplacementY = 0;
+
+	    this.fieldLevel.innerHTML = Math.floor(_Config2.default.level);
+	  },
+
+	  /*
 	   * シーンを生成する
 	   * @function createScene
 	   */
@@ -167,9 +198,14 @@
 	    this.scene.fog = new THREE.Fog(0xf7d9aa, 100, 950);
 
 	    this.camera = new THREE.PerspectiveCamera(fieldOfView, aspectRatio, nearPlane, farPlane);
-	    this.camera.position.x = 0;
-	    this.camera.position.z = 200;
-	    this.camera.position.y = _Config2.default.PLANE_DEFAULT_HEIGHT;
+	    this.camera.position.x = -150;
+	    this.camera.position.z = 150;
+	    this.camera.position.y = _Config2.default.PLANE_DEFAULT_HEIGHT + 100;
+	    this.camera.lookAt({
+	      x: 0,
+	      y: 200,
+	      z: 0
+	    });
 
 	    this.renderer = new THREE.WebGLRenderer({
 	      alpha: true,
@@ -484,10 +520,10 @@
 	    this.camera.updateProjectionMatrix();
 	    this.camera.position.y += (this.airplane.mesh.position.y - this.camera.position.y) * _Config2.default.deltaTime * _Config2.default.CAMERA_SENSIVITY;
 
-	    _Config2.default.collisionSpeedX += (0 - _Config2.default.collisionSpeedX) * _Config2.default.deltaTime * 0.03;
-	    _Config2.default.collisionDisplacementX += (0 - _Config2.default.collisionDisplacementX) * _Config2.default.deltaTime * 0.01;
-	    _Config2.default.collisionSpeedY += (0 - _Config2.default.collisionSpeedY) * _Config2.default.deltaTime * 0.03;
-	    _Config2.default.collisionDisplacementY += (0 - _Config2.default.collisionDisplacementY) * _Config2.default.deltaTime * 0.01;
+	    _Config2.default.collisionSpeedX -= _Config2.default.collisionSpeedX * _Config2.default.deltaTime * 0.03;
+	    _Config2.default.collisionSpeedY -= _Config2.default.collisionSpeedY * _Config2.default.deltaTime * 0.03;
+	    _Config2.default.collisionDisplacementX -= _Config2.default.collisionDisplacementX * _Config2.default.deltaTime * 0.01;
+	    _Config2.default.collisionDisplacementY -= _Config2.default.collisionDisplacementY * _Config2.default.deltaTime * 0.01;
 
 	    this.airplane.pilot.updateHairs();
 	  },
@@ -546,63 +582,12 @@
 
 	      this.status = 'gameover';
 	    }
-	  },
-
-	  /*
-	   * ゲームリセット
-	   * @function resetGame
-	   */
-	  resetGame: function resetGame() {
-
-	    _Config2.default.energy = 100;
-	    _Config2.default.level = 1;
-	    _Config2.default.distance = 0;
-	    _Config2.default.speed = 0;
-	    _Config2.default.baseSpeed = 0.00035;
-	    _Config2.default.planeFallSpeed = 0.001;
-
-	    _Config2.default.targetBaseSpeed = 0.00035;
-	    _Config2.default.planeSpeed = 0;
-
-	    this.coinLastSpawn = 0; /* 最後にスポーンした時の距離 */
-	    this.levelLastUpdate = 0; /* 最後にアップデートした時の距離 */
-	    this.speedLastUpdate = 0; /* 最後にアップデートした時の距離 */
-	    this.enemyLastSpawn = 0; /* 最後にスポーンした時の距離 */
-
-	    this.status = 'playing';
-
-	    _Config2.default.collisionSpeedX = 0;
-	    _Config2.default.collisionSpeedY = 0;
-	    _Config2.default.collisionDisplacementX = 0;
-	    _Config2.default.collisionDisplacementY = 0;
-
-	    _Config2.default.DISTANCE_FOR_SPEED_UPDATE = 100;
-	    _Config2.default.DISTANCE_FOR_COINS_SPAWN = 100;
-	    _Config2.default.DISTANCE_FOR_LEVEL_UPDATE = 1000;
-	    _Config2.default.DISTANCE_FOR_ENEMIES_SPAWN = 50;
-
-	    _Config2.default.PLANE_AMP_WIDTH = 75;
-	    _Config2.default.PLANE_MOVE_SENSIVITY = 0.005;
-	    _Config2.default.PLANE_ROT_X_SENSIVITY = 0.0008;
-	    _Config2.default.PLANE_ROT_Z_SENSIVITY = 0.0004;
-	    _Config2.default.PLANE_MIN_SPEED = 1.2;
-	    _Config2.default.PLANE_MAX_SPEED = 1.6;
-
-	    _Config2.default.RATIO_SPEED_DISTANCE = 50;
-	    _Config2.default.RATIO_SPEED_ENERGY = 3;
-
-	    _Config2.default.INIT_SPEED = 0.00035;
-	    _Config2.default.INCREMENT_SPEED_TIME = 0.0000025;
-	    _Config2.default.INCREMENT_SPEED_BY_LEVEL = 0.000005;
-
-	    _Config2.default.CAMERA_SENSIVITY = 0.002;
-
-	    this.fieldLevel.innerHTML = Math.floor(_Config2.default.level);
 	  }
 
 	};
 
 	window.addEventListener('load', function init() {
+
 	  AVIATOR.AVIATOR_OBJECT.init();
 	}, false);
 
@@ -51817,6 +51802,27 @@
 	 */
 	_Config2.default.PLANE_AMP_HEIGHT = 80;
 
+	_Config2.default.DISTANCE_FOR_SPEED_UPDATE = 100;
+	_Config2.default.DISTANCE_FOR_COINS_SPAWN = 100;
+	_Config2.default.DISTANCE_FOR_LEVEL_UPDATE = 1000;
+	_Config2.default.DISTANCE_FOR_ENEMIES_SPAWN = 50;
+
+	_Config2.default.PLANE_AMP_WIDTH = 75;
+	_Config2.default.PLANE_MOVE_SENSIVITY = 0.005;
+	_Config2.default.PLANE_ROT_X_SENSIVITY = 0.0008;
+	_Config2.default.PLANE_ROT_Z_SENSIVITY = 0.0004;
+	_Config2.default.PLANE_MIN_SPEED = 1.2;
+	_Config2.default.PLANE_MAX_SPEED = 1.6;
+
+	_Config2.default.RATIO_SPEED_DISTANCE = 50;
+	_Config2.default.RATIO_SPEED_ENERGY = 3;
+
+	_Config2.default.INIT_SPEED = 0.00035;
+	_Config2.default.INCREMENT_SPEED_TIME = 0.0000025;
+	_Config2.default.INCREMENT_SPEED_BY_LEVEL = 0.000005;
+
+	_Config2.default.CAMERA_SENSIVITY = 0.002;
+
 	_Config2.default.COIN_VALUE = 3;
 	_Config2.default.ENEMY_VALUE = 10;
 
@@ -51899,7 +51905,7 @@
 	      this.clouds.push(c);
 	      c.mesh.position.y = Math.sin(a) * h;
 	      c.mesh.position.x = Math.cos(a) * h;
-	      c.mesh.position.z = -300 - Math.random() * 500;
+	      c.mesh.position.z = -200 - Math.random() * 500;
 	      c.mesh.rotation.z = a + Math.PI / 2;
 	      c.mesh.scale.set(s, s, s);
 
